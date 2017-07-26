@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import os
+import json
 
 DatenArray = []
 ListeTextdateienOhneFilm = []
@@ -138,3 +139,17 @@ for i in range(len(ListeDateienOhneEndung)):
 EndeHTML = '</body>' + '\n' + '</html>'
 Ausgabedatei.write(EndeHTML)
 Ausgabedatei.close()
+
+# Daten als Json-Dateien speichern
+if not os.path.exists('json-Dateien'):
+    os.makedirs('json-Dateien')
+    print("------------------------------------------------")
+    print('Verzeichnis json-Dateien erstellt.')
+with open('json-Dateien/DatenArray.json', 'w') as f:
+    json.dump(DatenArray, f)
+with open('json-Dateien/ListeTextdateienOhneFilm.json', 'w') as f:
+    json.dump(ListeTextdateienOhneFilm, f)
+with open('json-Dateien/ListeAndereDateienOhneText.json', 'w') as f:
+    json.dump(ListeAndereDateienOhneText, f)
+with open('json-Dateien/ListeDateienOhneEndung.json', 'w') as f:
+    json.dump(ListeDateienOhneEndung, f)
