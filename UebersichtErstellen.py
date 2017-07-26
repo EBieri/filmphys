@@ -124,7 +124,7 @@ for i in range(len(ListeDateienOhneEndung)):
     print(ListeDateienOhneEndung[i])
 print("Länge: " + str(len(ListeDateienOhneEndung)) + ", Breite: " + str(len(ListeDateienOhneEndung[0])))
 
-# Nun HTML-Datei erstellen:
+# HTML-Datei Daten:
 Ausgabedatei = open("UebersichtFilme.html","w")
 AnfangHTML = "<!DOCTYPE html>" + '\n' + '<html lang="de">' + '\n' + '<head>' + '\n' + '<meta charset="utf-8">' + '\n' + '<meta name="viewport" content="width=device-width, initial-scale=1.0">' + '\n' + '<title> Übersicht Filme </title>' + '\n' + '</head>' + '\n' + '<body>' + '\n'
 Ausgabedatei.write(AnfangHTML)
@@ -139,7 +139,15 @@ for i in range(len(DatenArray)):
 EndeTabelle = '<!-- usw. andere Zeilen der Tabelle -->' + '\n' + '</table>' + '\n'
 Ausgabedatei.write(EndeTabelle)
 
-Ausgabedatei.write('<br> <br> <br> <br> <br> <br> <br> <br> <br> ')
+EndeHTML = '</body>' + '\n' + '</html>'
+Ausgabedatei.write(EndeHTML)
+Ausgabedatei.close()
+
+# HTML-Datei Kommentare:
+Ausgabedatei = open("UebersichtKommentare.html","w")
+AnfangHTML = "<!DOCTYPE html>" + '\n' + '<html lang="de">' + '\n' + '<head>' + '\n' + '<meta charset="utf-8">' + '\n' + '<meta name="viewport" content="width=device-width, initial-scale=1.0">' + '\n' + '<title> Übersicht Filme </title>' + '\n' + '</head>' + '\n' + '<body>' + '\n'
+Ausgabedatei.write(AnfangHTML)
+Ausgabedatei.write('<h2> &Uuml;bersicht Optimierungsdaten </h2>')
 
 Ausgabedatei.write('<br> <h3> Folgende Angaben dienen der Optimierung </h3>')
 Ausgabedatei.write('<br> <h4> Textdateien ohne Filmdatei </h4>')
