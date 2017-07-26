@@ -7,6 +7,7 @@ DatenArray = []
 ListeTextdateienOhneFilm = []
 ListeAndereDateienOhneText = []
 ListeDateienOhneEndung = []
+LaengePfad = 0
 
 def PathAnalysieren(pfad,vergleichsstring):
     ausgabe = 0
@@ -19,6 +20,12 @@ def PathAnalysieren(pfad,vergleichsstring):
 # Daten auslesen
 # Ändern: Aktuelles Verzeichnis soll Ausgangspunkt sein!
 #for root, dirs, files in os.walk("/home/verwaltung/Schreibtisch/Projekte_Programmieren/filmphys/"):
+for root, dirs, files in os.walk(os.getcwd()):
+    LaengePfad = len(root.split(os.sep))
+    break
+
+print(LaengePfad)
+
 for root, dirs, files in os.walk(os.getcwd()):
     path = root.split(os.sep)
     if not PathAnalysieren(path,'.git'):
@@ -51,7 +58,11 @@ for root, dirs, files in os.walk(os.getcwd()):
                         Inhalt = DateiZumAuslesen.read()
                         Datenfilm = Inhalt.strip(' \n').split('\n\n')
                         Datenfilm.insert(0, file[:-4])
-                        Datenfilm.append(path[-1])
+                        s = "../"
+                        for i in range(LaengePfad,len(path)):
+                            s = s + path[i] + '/'
+                        print(s)
+                        Datenfilm.append(s)
                         DatenArray.append(Datenfilm)
                         print(DatenArray)
                         DateiZumAuslesen.close()
