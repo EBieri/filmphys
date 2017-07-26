@@ -28,7 +28,7 @@ print(LaengePfad)
 
 for root, dirs, files in os.walk(os.getcwd()):
     path = root.split(os.sep)
-    if not PathAnalysieren(path,'.git'):
+    if not (PathAnalysieren(path,'.git') or PathAnalysieren(path,'json-Dateien')):
         #print("Eintritt ins .git-Verzeichnis: Abbruch!")
         #break
 
@@ -126,7 +126,7 @@ print("Länge: " + str(len(ListeDateienOhneEndung)) + ", Breite: " + str(len(Lis
 
 # HTML-Datei Daten:
 Ausgabedatei = open("UebersichtFilme.html","w")
-AnfangHTML = "<!DOCTYPE html>" + '\n' + '<html lang="de">' + '\n' + '<head>' + '\n' + '<meta charset="utf-8">' + '\n' + '<meta name="viewport" content="width=device-width, initial-scale=1.0">' + '\n' + '<title> Übersicht Filme </title>' + '\n' + '</head>' + '\n' + '<body>' + '\n'
+AnfangHTML = "<!DOCTYPE html>" + '\n' + '<html lang="de">' + '\n' + '<head>' + '\n' + '<meta charset="utf-8">' + '\n' + '<meta name="viewport" content="width=device-width, initial-scale=1.0">' + '\n' + '<title> &Uuml;bersicht Filme </title>' + '\n' + '</head>' + '\n' + '<body>' + '\n'
 Ausgabedatei.write(AnfangHTML)
 Ausgabedatei.write('<h2> &Uuml;bersicht Filme </h2>')
 AnfangTabelle = '<table border="1" width="100%">' + '\n' + '<colgroup>' + '\n' + '<col width="1*">'+ '<col width="1*">' + '\n' + '<col width="1*">' + '\n' + '<col width="1*">' + '\n' + '</colgroup>' + '\n' + '<tr bgcolor="#EEEEEE">' + '\n'
@@ -144,8 +144,8 @@ Ausgabedatei.write(EndeHTML)
 Ausgabedatei.close()
 
 # HTML-Datei Kommentare:
-Ausgabedatei = open("UebersichtKommentare.html","w")
-AnfangHTML = "<!DOCTYPE html>" + '\n' + '<html lang="de">' + '\n' + '<head>' + '\n' + '<meta charset="utf-8">' + '\n' + '<meta name="viewport" content="width=device-width, initial-scale=1.0">' + '\n' + '<title> Übersicht Filme </title>' + '\n' + '</head>' + '\n' + '<body>' + '\n'
+Ausgabedatei = open("UebersichtOptimierungsdaten.html","w")
+AnfangHTML = "<!DOCTYPE html>" + '\n' + '<html lang="de">' + '\n' + '<head>' + '\n' + '<meta charset="utf-8">' + '\n' + '<meta name="viewport" content="width=device-width, initial-scale=1.0">' + '\n' + '<title> &Uuml;bersicht Optimierungsdaten </title>' + '\n' + '</head>' + '\n' + '<body>' + '\n'
 Ausgabedatei.write(AnfangHTML)
 Ausgabedatei.write('<h2> &Uuml;bersicht Optimierungsdaten </h2>')
 
