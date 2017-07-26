@@ -8,78 +8,85 @@ ListeTextdateienOhneFilm = []
 ListeAndereDateienOhneText = []
 ListeDateienOhneEndung = []
 
+def PathAnalysieren(pfad,vergleichsstring):
+    ausgabe = 0
+    for i in pfad:
+        if i == vergleichsstring:
+            ausgabe = 1
+    return ausgabe
+    
+
 # Daten auslesen
 # Ändern: Aktuelles Verzeichnis soll Ausgangspunkt sein!
-for root, dirs, files in os.walk("/home/verwaltung/Schreibtisch/Projekte_Programmieren/filmschnipsel/"):
+#for root, dirs, files in os.walk("/home/verwaltung/Schreibtisch/Projekte_Programmieren/filmphys/"):
+for root, dirs, files in os.walk(os.getcwd()):
     path = root.split(os.sep)
-    if str(path[-1]) == ".git":
-        print("Eintritt ins .git-Verzeichnis: Abbruch!")
-        break
+    if not PathAnalysieren(path,'.git'):
+        #print("Eintritt ins .git-Verzeichnis: Abbruch!")
+        #break
 
-    # print((len(path) - 1) * '---', os.path.basename(root))
-    for file in files:
-        DateiUndEndung = file.split('.')
+        for file in files:
+            DateiUndEndung = file.split('.')
 
-        #print(path)
-        #print(type(path[-1]))
-        #print(path[-1])
-        #print(files)
-        #print(file + " " + DateiUndEndung[1])
-        if len(DateiUndEndung) > 1:
-            if DateiUndEndung[1] == "txt":
-                test = 0
-                for file2 in files:
-                    DateiUndEndung2 = file2.split('.')
-                    if DateiUndEndung[0] == DateiUndEndung2[0] and DateiUndEndung[1] != DateiUndEndung2[1]:
-                        test = 1
-                        #print("Es gibt Text- und Filmdatei: " + DateiUndEndung[0])
-                        break
-                    #else:
-                    #    test = 0
-                if test == 1:
-                    print("Es gibt Text- und Filmdatei: " + DateiUndEndung[0])
-                    DateiZumAuslesen = open(root + '/' + file,"r")
-                    Inhalt = DateiZumAuslesen.read()
-                    Datenfilm = Inhalt.strip(' \n').split('\n\n')
-                    Datenfilm.insert(0, file[:-4])
-                    Datenfilm.append(path[-1])
-                    DatenArray.append(Datenfilm)
-                    print(DatenArray)
-                    DateiZumAuslesen.close()
+            #print(root)
+            #print(path)
+            #print(type(path[-1]))
+            #print(path[-1])
+            #print(files)
+            #print(file + " " + DateiUndEndung[1])
+            if len(DateiUndEndung) > 1:
+                if DateiUndEndung[1] == "txt":
+                    test = 0
+                    for file2 in files:
+                        DateiUndEndung2 = file2.split('.')
+                        if DateiUndEndung[0] == DateiUndEndung2[0] and DateiUndEndung[1] != DateiUndEndung2[1]:
+                            test = 1
+                            #print("Es gibt Text- und Filmdatei: " + DateiUndEndung[0])
+                            break
+                        #else:
+                        #    test = 0
+                    if test == 1:
+                        print("Es gibt Text- und Filmdatei: " + DateiUndEndung[0])
+                        DateiZumAuslesen = open(root + '/' + file,"r")
+                        Inhalt = DateiZumAuslesen.read()
+                        Datenfilm = Inhalt.strip(' \n').split('\n\n')
+                        Datenfilm.insert(0, file[:-4])
+                        Datenfilm.append(path[-1])
+                        DatenArray.append(Datenfilm)
+                        print(DatenArray)
+                        DateiZumAuslesen.close()
+                    else:
+                        print("Es gibt NUR eine Textdatei: " + DateiUndEndung[0])
+                        if path[-1].strip() == "":
+                            ListeTextdateienOhneFilm.append(file)
+                        else:
+                            ListeTextdateienOhneFilm.append(path[-1] + '/' + file)
+                        ListeTextdateienOhneFilm.sort()
+                        
                 else:
-                    print("Es gibt NUR eine Textdatei: " + DateiUndEndung[0])
-                    if path[-1].strip() == "":
-                        ListeTextdateienOhneFilm.append(file)
-                    else:
-                        ListeTextdateienOhneFilm.append(path[-1] + '/' + file)
-                    ListeTextdateienOhneFilm.sort()
+                    #Testen, ob es eine gleichnamige Textdatei gibt:
+                    test = 0
+                    for file3 in files:
+                        DateiUndEndung3 = file3.split('.')
+                        if DateiUndEndung[0] == DateiUndEndung3[0] and DateiUndEndung[1] != DateiUndEndung3[1]:
+                            test = 1
+                            break
+                    if test == 0:
+                        print("Es gibt NUR eine (Nichttext)datei: " + DateiUndEndung[0])
+                        if path[-1].strip() == "":
+                            ListeAndereDateienOhneText.append(file)
+                        else:
+                            ListeAndereDateienOhneText.append(path[-1] + '/' + file)
+                        ListeAndereDateienOhneText.sort()
+                        
+            elif len(DateiUndEndung) == 1:
+                print("Diese Datei hat keine Endung: " + DateiUndEndung[0])
+                if path[-1].strip() == "":
+                    ListeDateienOhneEndung.append(file)
+                else:
+                    ListeDateienOhneEndung.append(path[-1] + '/' + file)
+                ListeDateienOhneEndung.sort()
                     
-            else:
-                #Testen, ob es eine gleichnamige Textdatei gibt:
-                test = 0
-                for file3 in files:
-                    DateiUndEndung3 = file3.split('.')
-                    if DateiUndEndung[0] == DateiUndEndung3[0] and DateiUndEndung[1] != DateiUndEndung3[1]:
-                        test = 1
-                        break
-                if test == 0:
-                    print("Es gibt NUR eine (Nichttext)datei: " + DateiUndEndung[0])
-                    if path[-1].strip() == "":
-                        ListeAndereDateienOhneText.append(file)
-                    else:
-                        ListeAndereDateienOhneText.append(path[-1] + '/' + file)
-                    ListeAndereDateienOhneText.sort()
-                    
-        elif len(DateiUndEndung) == 1:
-            print("Diese Datei hat keine Endung: " + DateiUndEndung[0])
-            if path[-1].strip() == "":
-                ListeDateienOhneEndung.append(file)
-            else:
-                ListeDateienOhneEndung.append(path[-1] + '/' + file)
-            ListeDateienOhneEndung.sort()
-                    
-        #        print("File: " + file[:-3] + " und File2: " + file2[:-3])
-        #    # print(root + '/' + file)
 
 print("------------------------------------------------")
 print("------------------------------------------------")
@@ -147,6 +154,8 @@ if not os.path.exists('json-Dateien'):
     print('Verzeichnis json-Dateien erstellt.')
 with open('json-Dateien/DatenArray.json', 'w') as f:
     json.dump(DatenArray, f)
+    print("------------------------------------------------")
+    print('DatenArray.json geschrieben.')
 with open('json-Dateien/ListeTextdateienOhneFilm.json', 'w') as f:
     json.dump(ListeTextdateienOhneFilm, f)
 with open('json-Dateien/ListeAndereDateienOhneText.json', 'w') as f:
