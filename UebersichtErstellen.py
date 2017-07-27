@@ -6,8 +6,8 @@ from xml.dom.minidom import parse
 import xml.dom.minidom
 
 DatenArray = []
-ListeTextdateienOhneFilm = []
-ListeAndereDateienOhneText = []
+ListeXMLdateienOhneFilm = []
+ListeAndereDateienOhneXML = []
 ListeDateienOhneEndung = []
 LaengePfad = 0
 
@@ -55,29 +55,19 @@ for root, dirs, files in os.walk(os.getcwd()):
                         #else:
                         #    test = 0
                     if test == 1:
-                        print("Es gibt Text- und Filmdatei: " + DateiUndEndung[0])
+                        print("Es gibt XML- und Filmdatei: " + DateiUndEndung[0])
                         print(DateiUndEndung[0] + ".xml")
                         DOMTree = xml.dom.minidom.parse(DateiUndEndung[0] + ".xml")
-                        collection = DOMTree.documentElement
-                        # Get all the movies in the collection
-                        filme = collection.getElementsByTagName("film")
-                        #print("Film: ")
-                        print(len(filme))
-                        #print(filme.getElementsByTagName('beschreibung')[0].childNodes[0].data)
-                        for film in filme:
-                            beschreibung = film.getElementsByTagName('beschreibung')[0].childNodes[0].data
-                            stichworte = film.getElementsByTagName('stichworte')[0].childNodes[0].data
-                            print(beschreibung)
-                            print(stichworte)
+                        film = DOMTree.documentElement
+                        beschreibung = film.getElementsByTagName('beschreibung')[0].childNodes[0].data
+                        stichworte = film.getElementsByTagName('stichworte')[0].childNodes[0].data
+                        print(beschreibung)
+                        print(stichworte)
                         Datenfilm = []
                         Datenfilm.append(file[:-4])
                         Datenfilm.append(beschreibung)
                         Datenfilm.append(stichworte)
                         
-                        #DateiZumAuslesen = open(root + '/' + file,"r")
-                        #Inhalt = DateiZumAuslesen.read()
-                        #Datenfilm = Inhalt.strip(' \n').split('\n\n')
-                        #Datenfilm.insert(0, file[:-4])
                         s = "../"
                         for i in range(LaengePfad,len(path)):
                             s = s + path[i] + '/'
@@ -88,15 +78,15 @@ for root, dirs, files in os.walk(os.getcwd()):
                         print(DatenArray)
                         #DateiZumAuslesen.close()
                     else:
-                        print("Es gibt NUR eine Textdatei: " + DateiUndEndung[0])
+                        print("Es gibt NUR eine XML-Datei: " + DateiUndEndung[0])
                         if path[-1].strip() == "":
-                            ListeTextdateienOhneFilm.append(file)
+                            ListeXMLdateienOhneFilm.append(file)
                         else:
-                            ListeTextdateienOhneFilm.append(path[-1] + '/' + file)
-                        ListeTextdateienOhneFilm.sort()
+                            ListeXMLdateienOhneFilm.append(path[-1] + '/' + file)
+                        ListeXMLdateienOhneFilm.sort()
                         
                 else:
-                    #Testen, ob es eine gleichnamige Textdatei gibt:
+                    #Testen, ob es eine gleichnamige XML-Datei gibt:
                     test = 0
                     for file3 in files:
                         DateiUndEndung3 = file3.split('.')
@@ -104,12 +94,12 @@ for root, dirs, files in os.walk(os.getcwd()):
                             test = 1
                             break
                     if test == 0:
-                        print("Es gibt NUR eine (Nichttext)datei: " + DateiUndEndung[0])
+                        print("Es gibt NUR eine (Nicht-XML)Datei: " + DateiUndEndung[0])
                         if path[-1].strip() == "":
-                            ListeAndereDateienOhneText.append(file)
+                            ListeAndereDateienOhneXML.append(file)
                         else:
-                            ListeAndereDateienOhneText.append(path[-1] + '/' + file)
-                        ListeAndereDateienOhneText.sort()
+                            ListeAndereDateienOhneXML.append(path[-1] + '/' + file)
+                        ListeAndereDateienOhneXML.sort()
                         
             elif len(DateiUndEndung) == 1:
                 print("Diese Datei hat keine Endung: " + DateiUndEndung[0])
@@ -127,16 +117,16 @@ for root, dirs, files in os.walk(os.getcwd()):
 ##print("Länge: " + str(len(DatenArray)) + ", Breite: " + str(len(DatenArray[0])))
 ##print("------------------------------------------------")
 ##print("------------------------------------------------")
-##print("------ ListeTextdateienOhneFilm ---------")
-##for i in range(len(ListeTextdateienOhneFilm)):
-##    print(ListeTextdateienOhneFilm[i])
-##print("Länge: " + str(len(ListeTextdateienOhneFilm)) + ", Breite: " + str(len(ListeTextdateienOhneFilm[0])))
+##print("------ ListeXMLdateienOhneFilm ---------")
+##for i in range(len(ListeXMLdateienOhneFilm)):
+##    print(ListeXMLdateienOhneFilm[i])
+##print("Länge: " + str(len(ListeXMLdateienOhneFilm)) + ", Breite: " + str(len(ListeXMLdateienOhneFilm[0])))
 ##print("------------------------------------------------")
 ##print("------------------------------------------------")
-##print("------ ListeAndereDateienOhneText ---------")
-##for i in range(len(ListeAndereDateienOhneText)):
-##    print(ListeAndereDateienOhneText[i])
-##print("Länge: " + str(len(ListeAndereDateienOhneText)) + ", Breite: " + str(len(ListeAndereDateienOhneText[0])))
+##print("------ ListeAndereDateienOhneXML ---------")
+##for i in range(len(ListeAndereDateienOhneXML)):
+##    print(ListeAndereDateienOhneXML[i])
+##print("Länge: " + str(len(ListeAndereDateienOhneXML)) + ", Breite: " + str(len(ListeAndereDateienOhneXML[0])))
 ##print("------------------------------------------------")
 ##print("------------------------------------------------")
 ##print("------ ListeDateienOhneEndung ---------")
@@ -170,13 +160,13 @@ Ausgabedatei.write(AnfangHTML)
 Ausgabedatei.write('<h2> &Uuml;bersicht Optimierungsdaten </h2>')
 
 Ausgabedatei.write('<br> <h3> Folgende Angaben dienen der Optimierung </h3>')
-Ausgabedatei.write('<br> <h4> Textdateien ohne Filmdatei </h4>')
-for i in range(len(ListeTextdateienOhneFilm)):
-    Ausgabedatei.write(ListeTextdateienOhneFilm[i] + '<br>')
+Ausgabedatei.write('<br> <h4> XML-Dateien ohne Filmdatei </h4>')
+for i in range(len(ListeXMLdateienOhneFilm)):
+    Ausgabedatei.write(ListeXMLdateienOhneFilm[i] + '<br>')
 
-Ausgabedatei.write('<br> <h4> Andere Dateien (Filmdateien und andere...) ohne zugehoerige Textdatei </h4>')
-for i in range(len(ListeAndereDateienOhneText)):
-    Ausgabedatei.write(ListeAndereDateienOhneText[i] + '<br>')
+Ausgabedatei.write('<br> <h4> Andere Dateien (Filmdateien und andere...) ohne zugehoerige XML-Datei </h4>')
+for i in range(len(ListeAndereDateienOhneXML)):
+    Ausgabedatei.write(ListeAndereDateienOhneXML[i] + '<br>')
 
 Ausgabedatei.write('<br> <h4> Dateien ohne Dateiendung </h4>')
 for i in range(len(ListeDateienOhneEndung)):
@@ -195,9 +185,9 @@ with open('json-Dateien/DatenArray.json', 'w') as f:
     json.dump(DatenArray, f)
     print("------------------------------------------------")
     print('DatenArray.json geschrieben.')
-with open('json-Dateien/ListeTextdateienOhneFilm.json', 'w') as f:
-    json.dump(ListeTextdateienOhneFilm, f)
-with open('json-Dateien/ListeAndereDateienOhneText.json', 'w') as f:
-    json.dump(ListeAndereDateienOhneText, f)
+with open('json-Dateien/ListeXMLdateienOhneFilm.json', 'w') as f:
+    json.dump(ListeXMLdateienOhneFilm, f)
+with open('json-Dateien/ListeAndereDateienOhneXML.json', 'w') as f:
+    json.dump(ListeAndereDateienOhneXML, f)
 with open('json-Dateien/ListeDateienOhneEndung.json', 'w') as f:
     json.dump(ListeDateienOhneEndung, f)
