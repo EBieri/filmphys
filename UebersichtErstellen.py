@@ -2,6 +2,8 @@
 
 import os
 import json
+from xml.dom.minidom import parse
+import xml.dom.minidom
 
 DatenArray = []
 ListeTextdateienOhneFilm = []
@@ -42,7 +44,7 @@ for root, dirs, files in os.walk(os.getcwd()):
             #print(files)
             #print(file + " " + DateiUndEndung[1])
             if len(DateiUndEndung) > 1:
-                if DateiUndEndung[1] == "txt":
+                if DateiUndEndung[1] == "xml":
                     test = 0
                     for file2 in files:
                         DateiUndEndung2 = file2.split('.')
@@ -54,18 +56,37 @@ for root, dirs, files in os.walk(os.getcwd()):
                         #    test = 0
                     if test == 1:
                         print("Es gibt Text- und Filmdatei: " + DateiUndEndung[0])
-                        DateiZumAuslesen = open(root + '/' + file,"r")
-                        Inhalt = DateiZumAuslesen.read()
-                        Datenfilm = Inhalt.strip(' \n').split('\n\n')
-                        Datenfilm.insert(0, file[:-4])
+                        print(DateiUndEndung[0] + ".xml")
+                        DOMTree = xml.dom.minidom.parse(DateiUndEndung[0] + ".xml")
+                        collection = DOMTree.documentElement
+                        # Get all the movies in the collection
+                        filme = collection.getElementsByTagName("film")
+                        #print("Film: ")
+                        print(len(filme))
+                        #print(filme.getElementsByTagName('beschreibung')[0].childNodes[0].data)
+                        for film in filme:
+                            beschreibung = film.getElementsByTagName('beschreibung')[0].childNodes[0].data
+                            stichworte = film.getElementsByTagName('stichworte')[0].childNodes[0].data
+                            print(beschreibung)
+                            print(stichworte)
+                        Datenfilm = []
+                        Datenfilm.append(file[:-4])
+                        Datenfilm.append(beschreibung)
+                        Datenfilm.append(stichworte)
+                        
+                        #DateiZumAuslesen = open(root + '/' + file,"r")
+                        #Inhalt = DateiZumAuslesen.read()
+                        #Datenfilm = Inhalt.strip(' \n').split('\n\n')
+                        #Datenfilm.insert(0, file[:-4])
                         s = "../"
                         for i in range(LaengePfad,len(path)):
                             s = s + path[i] + '/'
                         print(s)
                         Datenfilm.append(s)
+                        
                         DatenArray.append(Datenfilm)
                         print(DatenArray)
-                        DateiZumAuslesen.close()
+                        #DateiZumAuslesen.close()
                     else:
                         print("Es gibt NUR eine Textdatei: " + DateiUndEndung[0])
                         if path[-1].strip() == "":
@@ -97,32 +118,31 @@ for root, dirs, files in os.walk(os.getcwd()):
                 else:
                     ListeDateienOhneEndung.append(path[-1] + '/' + file)
                 ListeDateienOhneEndung.sort()
-                    
 
-print("------------------------------------------------")
-print("------------------------------------------------")
-print("------ Datenarray ---------")
-for i in range(len(DatenArray)):
-    print(DatenArray[i])
-print("Länge: " + str(len(DatenArray)) + ", Breite: " + str(len(DatenArray[0])))
-print("------------------------------------------------")
-print("------------------------------------------------")
-print("------ ListeTextdateienOhneFilm ---------")
-for i in range(len(ListeTextdateienOhneFilm)):
-    print(ListeTextdateienOhneFilm[i])
-print("Länge: " + str(len(ListeTextdateienOhneFilm)) + ", Breite: " + str(len(ListeTextdateienOhneFilm[0])))
-print("------------------------------------------------")
-print("------------------------------------------------")
-print("------ ListeAndereDateienOhneText ---------")
-for i in range(len(ListeAndereDateienOhneText)):
-    print(ListeAndereDateienOhneText[i])
-print("Länge: " + str(len(ListeAndereDateienOhneText)) + ", Breite: " + str(len(ListeAndereDateienOhneText[0])))
-print("------------------------------------------------")
-print("------------------------------------------------")
-print("------ ListeDateienOhneEndung ---------")
-for i in range(len(ListeDateienOhneEndung)):
-    print(ListeDateienOhneEndung[i])
-print("Länge: " + str(len(ListeDateienOhneEndung)) + ", Breite: " + str(len(ListeDateienOhneEndung[0])))
+##print("------------------------------------------------")
+##print("------------------------------------------------")
+##print("------ Datenarray ---------")
+##for i in range(len(DatenArray)):
+##    print(DatenArray[i])
+##print("Länge: " + str(len(DatenArray)) + ", Breite: " + str(len(DatenArray[0])))
+##print("------------------------------------------------")
+##print("------------------------------------------------")
+##print("------ ListeTextdateienOhneFilm ---------")
+##for i in range(len(ListeTextdateienOhneFilm)):
+##    print(ListeTextdateienOhneFilm[i])
+##print("Länge: " + str(len(ListeTextdateienOhneFilm)) + ", Breite: " + str(len(ListeTextdateienOhneFilm[0])))
+##print("------------------------------------------------")
+##print("------------------------------------------------")
+##print("------ ListeAndereDateienOhneText ---------")
+##for i in range(len(ListeAndereDateienOhneText)):
+##    print(ListeAndereDateienOhneText[i])
+##print("Länge: " + str(len(ListeAndereDateienOhneText)) + ", Breite: " + str(len(ListeAndereDateienOhneText[0])))
+##print("------------------------------------------------")
+##print("------------------------------------------------")
+##print("------ ListeDateienOhneEndung ---------")
+##for i in range(len(ListeDateienOhneEndung)):
+##    print(ListeDateienOhneEndung[i])
+##print("Länge: " + str(len(ListeDateienOhneEndung)) + ", Breite: " + str(len(ListeDateienOhneEndung[0])))
 
 # HTML-Datei Daten:
 Ausgabedatei = open("UebersichtFilme.html","w")
