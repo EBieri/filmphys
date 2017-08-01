@@ -153,12 +153,11 @@ Ausgabedatei.write(EndeHTML)
 Ausgabedatei.close()
 
 # HTML-Datei Kommentare:
-Ausgabedatei = open("UebersichtOptimierungsdaten.html","w")
+Ausgabedatei = open("UebersichtWeitereDateien.html","w")
 AnfangHTML = "<!DOCTYPE html>" + '\n' + '<html lang="de">' + '\n' + '<head>' + '\n' + '<meta charset="utf-8">' + '\n' + '<meta name="viewport" content="width=device-width, initial-scale=1.0">' + '\n' + '<title> &Uuml;bersicht Optimierungsdaten </title>' + '\n' + '</head>' + '\n' + '<body>' + '\n'
 Ausgabedatei.write(AnfangHTML)
-Ausgabedatei.write('<h2> &Uuml;bersicht Optimierungsdaten </h2>')
+Ausgabedatei.write('<h2> &Uuml;bersicht weitere Dateien </h2>')
 
-Ausgabedatei.write('<br> <h3> Folgende Angaben dienen der Optimierung </h3>')
 Ausgabedatei.write('<br> <h4> XML-Dateien ohne Filmdatei </h4>')
 for i in range(len(ListeXMLdateienOhneFilm)):
     Ausgabedatei.write(ListeXMLdateienOhneFilm[i] + '<br>')
