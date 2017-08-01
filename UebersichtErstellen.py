@@ -4,6 +4,7 @@ import os
 import json
 from xml.dom.minidom import parse
 import xml.dom.minidom
+import hashlib
 
 DatenArray = []
 ListeXMLdateienOhneFilm = []
@@ -56,7 +57,11 @@ for root, dirs, files in os.walk(os.getcwd()):
                         #    test = 0
                     if test == 1:
                         print("Es gibt XML- und Filmdatei: " + DateiUndEndung[0] + "." + DateiUndEndung2[1])
-                        DOMTree = xml.dom.minidom.parse(DateiUndEndung[0] + ".xml")
+                        s = ""
+                        for i in range(LaengePfad,len(path)):
+                            s = s + path[i] + '/'
+                        print(s + DateiUndEndung[0] + ".xml")
+                        DOMTree = xml.dom.minidom.parse(s + DateiUndEndung[0] + ".xml")
                         film = DOMTree.documentElement
                         beschreibung = film.getElementsByTagName('beschreibung')[0].childNodes[0].data
                         stichworte = film.getElementsByTagName('stichworte')[0].childNodes[0].data
@@ -66,16 +71,24 @@ for root, dirs, files in os.walk(os.getcwd()):
                         Datenfilm.append(DateiUndEndung[0] + "." + DateiUndEndung2[1])
                         Datenfilm.append(beschreibung)
                         Datenfilm.append(stichworte)
-                        
-                        s = "../"
-                        for i in range(LaengePfad,len(path)):
-                            s = s + path[i] + '/'
-                        print(s)
+
                         Datenfilm.append(s)
-                        
+
+                        #sha1sum bestimmen
+                        with open(s + DateiUndEndung[0] + "." + DateiUndEndung2[1], "rb") as f:
+                            data = f.read()
+                            sha1summe = hashlib.sha1()
+                            sha1summe.update(data)
+                            bstr = sha1summe.hexdigest()
+                            #print(type(bstr))
+                            #print(bstr[:8])
+
+                        Datenfilm.append(bstr[:8])
+
                         DatenArray.append(Datenfilm)
+
                         print(DatenArray)
-                        #DateiZumAuslesen.close()
+                        
                     else:
                         print("Es gibt NUR eine XML-Datei: " + DateiUndEndung[0])
                         if path[-1].strip() == "":
@@ -138,12 +151,12 @@ Ausgabedatei = open("UebersichtFilme.html","w")
 AnfangHTML = "<!DOCTYPE html>" + '\n' + '<html lang="de">' + '\n' + '<head>' + '\n' + '<meta charset="utf-8">' + '\n' + '<meta name="viewport" content="width=device-width, initial-scale=1.0">' + '\n' + '<title> &Uuml;bersicht Filme </title>' + '\n' + '</head>' + '\n' + '<body>' + '\n'
 Ausgabedatei.write(AnfangHTML)
 Ausgabedatei.write('<h2> &Uuml;bersicht Filme </h2>')
-AnfangTabelle = '<table border="1" width="100%">' + '\n' + '<colgroup>' + '\n' + '<col width="1*">'+ '<col width="1*">' + '\n' + '<col width="1*">' + '\n' + '<col width="1*">' + '\n' + '</colgroup>' + '\n' + '<tr bgcolor="#EEEEEE">' + '\n'
+AnfangTabelle = '<table border="1" width="100%">' + '\n' + '<colgroup>' + '\n' + '<col width="1*">'+ '<col width="1*">' + '\n' + '<col width="1*">' + '\n' + '<col width="1*">' + '\n' + '<col width="1*">' + '\n' + '</colgroup>' + '\n' + '<tr bgcolor="#EEEEEE">' + '\n'
 Ausgabedatei.write(AnfangTabelle)
-MitteTabelle = '<td> <b>Name Film</b> </td> <td> <b>Kurzbeschreibung</b> </td>' + '<td><b> Stichworte</b> </td>'+ '<td> <b>Verzeichnis</b> </td>' + '\n' + '</tr>' + '\n' 
+MitteTabelle = '<td> <b>Name Film</b> </td> <td> <b>Kurzbeschreibung</b> </td>' + '<td><b> Stichworte</b> </td>'+ '<td> <b>Verzeichnis</b> </td>' + '\n' + '<td> <b>Sha1</b> </td>' + '\n' + '</tr>' + '\n' 
 Ausgabedatei.write(MitteTabelle)
 for i in range(len(DatenArray)):
-    NeueZeile = '<td> ' + DatenArray[i][0] + '</td>' + '<td> ' + DatenArray[i][1] + '</td>' + '<td> ' + DatenArray[i][2] + '</td>' + '<td> ' + DatenArray[i][3] + '</td>' + '\n' + '</tr>' + '\n'
+    NeueZeile = '<td> ' + DatenArray[i][0] + '</td>' + '<td> ' + DatenArray[i][1] + '</td>' + '<td> ' + DatenArray[i][2] + '</td>' + '<td> ' + DatenArray[i][3] + '</td>' + '\n' + '<td> ' + DatenArray[i][4] + '</td>' + '\n' + '</tr>' + '\n'
     Ausgabedatei.write(NeueZeile)
 EndeTabelle = '<!-- usw. andere Zeilen der Tabelle -->' + '\n' + '</table>' + '\n'
 Ausgabedatei.write(EndeTabelle)
