@@ -55,8 +55,7 @@ for root, dirs, files in os.walk(os.getcwd()):
                         #else:
                         #    test = 0
                     if test == 1:
-                        print("Es gibt XML- und Filmdatei: " + DateiUndEndung[0])
-                        print(DateiUndEndung[0] + ".xml")
+                        print("Es gibt XML- und Filmdatei: " + DateiUndEndung[0] + "." + DateiUndEndung2[1])
                         DOMTree = xml.dom.minidom.parse(DateiUndEndung[0] + ".xml")
                         film = DOMTree.documentElement
                         beschreibung = film.getElementsByTagName('beschreibung')[0].childNodes[0].data
@@ -64,7 +63,7 @@ for root, dirs, files in os.walk(os.getcwd()):
                         print(beschreibung)
                         print(stichworte)
                         Datenfilm = []
-                        Datenfilm.append(file[:-4])
+                        Datenfilm.append(DateiUndEndung[0] + "." + DateiUndEndung2[1])
                         Datenfilm.append(beschreibung)
                         Datenfilm.append(stichworte)
                         
