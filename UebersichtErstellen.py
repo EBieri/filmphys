@@ -5,6 +5,7 @@ import json
 from xml.dom.minidom import parse
 import xml.dom.minidom
 import hashlib
+import csv
 
 DatenArray = []
 ListeXMLdateienOhneFilm = []
@@ -202,3 +203,15 @@ with open('json-Dateien/ListeAndereDateienOhneXML.json', 'w') as f:
     json.dump(ListeAndereDateienOhneXML, f)
 with open('json-Dateien/ListeDateienOhneEndung.json', 'w') as f:
     json.dump(ListeDateienOhneEndung, f)
+
+# DatenArray als csv-Datei speichern:
+if not os.path.exists('csv-Dateien'):
+    os.makedirs('csv-Dateien')
+    print("------------------------------------------------")
+    print('Verzeichnis csv-Dateien erstellt.')
+csv_Datei = open("csv-Dateien/UebersichtFilme.csv", "w")
+csv_writer = csv.writer(csv_Datei)
+for row in DatenArray:
+    print(row)
+    csv_writer.writerow(row)
+csv_Datei.close()
