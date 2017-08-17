@@ -1,1 +1,3 @@
-Das möchte ich realisieren
+Aufgabenstellung für Rüdiger Scheu
+ - einlesen der txt-Dateien (infos zu Filmen) mit Regulären Ausdrücken realisieren
+ - Codierungsproblematiken (utf-8, latin1, ...) durchdenken und evtl. Probleme auffangen
