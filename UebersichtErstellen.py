@@ -24,13 +24,13 @@ def PathAnalysieren(pfad,vergleichsstring):
 # Daten auslesen
 # Ändern: Aktuelles Verzeichnis soll Ausgangspunkt sein!
 #for root, dirs, files in os.walk("/home/verwaltung/Schreibtisch/Projekte_Programmieren/filmphys/"):
-for root, dirs, files in os.walk(os.getcwd()):
+for root, dirs, files in os.walk(os.getcwd() + "/Filmverzeichnis"):
     LaengePfad = len(root.split(os.sep))
     break
 
 print(LaengePfad)
 
-for root, dirs, files in os.walk(os.getcwd()):
+for root, dirs, files in os.walk(os.getcwd() + "/Filmverzeichnis"):
     path = root.split(os.sep)
     if not (PathAnalysieren(path,'.git') or PathAnalysieren(path,'json-Dateien')):
         #print("Eintritt ins .git-Verzeichnis: Abbruch!")
@@ -59,7 +59,7 @@ for root, dirs, files in os.walk(os.getcwd()):
                     if test == 1:
                         print("Es gibt XML- und Filmdatei: " + DateiUndEndung[0] + "." + DateiUndEndung2[1])
                         s = ""
-                        for i in range(LaengePfad,len(path)):
+                        for i in range(LaengePfad - 1,len(path)):
                             s = s + path[i] + '/'
                         print(s + DateiUndEndung[0] + ".xml")
                         DOMTree = xml.dom.minidom.parse(s + DateiUndEndung[0] + ".xml")
