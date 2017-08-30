@@ -1,0 +1,20 @@
+20.8.17
+
+Ausgabe / Output:
+- Liste mit Filmen (z.B. Titel / Beschreibung / Pfad / Link zu Ordner mit weiteren Dokumenten / Hashsumme)
+- csv-Datei mit den gleichen Daten (Kann man sortieren usw.
+- evtl. json-Datei (o.ä., zunächst weniger wichtig)
+- Fehlerausgabe: Z.B.: Wo sind die Eigabedaten inkonsistent (Filme ohne Beschrieb, Beschrieb ohne Film, Dateien ohne Endung (da diese zur Unterscheidung verwendet wird), usw. ...)
+
+Eingabe / Input:
+- Verzeichnis (mit Unterverzeichnissen) mit Filmen
+- zu jeder Filmdatei gibt es eine xml-Datei mit gleichem Namen, welche obige item (Ttel, Beschreibung, usw.) enthält
+
+Ablauf Skript:
+- Einlesen der xml-Datei
+- Speichern in Datenstruktur: -> Liste ODER Dictionary?
+- Erstellen einer html-Seite aus der Datenstruktur
+- Export der Datenstruktur in eine csv-Datei
+
+Klären: 
+- Struktur Filmverzeichnis
