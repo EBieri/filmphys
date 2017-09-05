@@ -82,16 +82,28 @@ for root, dirs, files in os.walk(pfadFilmverzeichnis):
                 ListeMitDateienOhneEndung.append(root + os.sep + DateiUndEndung[0])
             else:
                 weitereDateiVorhanden = 0
+                verzeichnisVorhanden = 0
                 if DateiUndEndung[1] == "xml":
+                    Eintrag = []
                     for file2 in files:
                         DateiUndEndung2 = file2.split('.')
                         if DateiUndEndung[0] == DateiUndEndung2[0] and DateiUndEndung[1] != DateiUndEndung2[1]:
                             # weitere Datei vorhanden
                             weitereDateiVorhanden = 1
-                            Eintrag = []
                             print("NOTIEREN: " + DateiUndEndung[0] + "." + DateiUndEndung[1] + ": Es ist eine XML-Datei + weitere Datei vorhanden.")
                             Eintrag.append(root + os.sep + DateiUndEndung[0] + "." + DateiUndEndung[1])
                             Eintrag.append(DateiUndEndung2[1])
+                            
+                            for dir in dirs:
+                                if dir == DateiUndEndung[0]:
+                                    verzeichnisVorhanden = 1
+                                    #print(dir + '/' + file)
+                            if verzeichnisVorhanden == 1:
+                                Eintrag.append("1")
+                            else:
+                                Eintrag.append("0")
+
+                    #print(Eintrag)
                             ListeXMLDateiMitFilmDateien.append(Eintrag)
 
                     #if weitereDateiVorhanden == 1:
@@ -137,8 +149,10 @@ if debug:
     print("")
 
 # Liste ListeXMLDateiMitFilmDateien durchgehen und Daten aus XML-Dateien auslesen:
-listeMitEintraegen = ['titel', 'beschreibung', 'stichworte','links']
+listeMitEintraegen = ['titel', 'beschreibung', 'stichworte']
 for datei in ListeXMLDateiMitFilmDateien:
+    print("")
+    print(datei)
     print(datei[0])
     print(datei[0][:-4] + '.' + datei[1])
     DOMTree = xml.dom.minidom.parse(datei[0])
@@ -165,7 +179,10 @@ for datei in ListeXMLDateiMitFilmDateien:
     #Film-Verzeichnis auslesen:
     #print("Filmverzeichnis:")
     #print(datei[len(pfadFilmverzeichnis):-4])
-    DatenEinzelnerFilm.append(datei[0][len(pfadFilmverzeichnis)+1:-4])
+    link = '<a href="' + datei[0][:-4] + '.' + datei[1] + '"> ' + datei[0][len(pfadFilmverzeichnis)+1:-4] + '.' + datei[1] + '</a> '
+    print(link)
+    #DatenEinzelnerFilm.append(datei[0][len(pfadFilmverzeichnis)+1:-4] + '.' + datei[1])
+    DatenEinzelnerFilm.append(link)
 
     #Hashsumme (sha1sum) Datei bestimmen:
     with open(datei[0], "rb") as f:
@@ -177,10 +194,15 @@ for datei in ListeXMLDateiMitFilmDateien:
         
     DatenEinzelnerFilm.append(bstr[:8])
 
-    #print(DatenEinzelnerFilm)
+    #Hat es Material?
+    if datei[2] == '1':
+        DatenEinzelnerFilm.append('<a href="' + datei[0][:-4] + '"> ' + datei[2] + '</a> ')
+    else:
+        DatenEinzelnerFilm.append(datei[2])
 
     DatenAlleFilme.append(DatenEinzelnerFilm)
 
+    print("DatenAllerFilme")
     print(DatenAlleFilme)
         
 # HTML-Datei Daten:
@@ -188,8 +210,9 @@ NameHTMLDatei = "UebersichtFilme2.html"
 TitelHTMLDatei = '&Uuml;bersicht Filme'
 AnzahlKategorien = len(DatenAlleFilme[0])
 SpaltenNamen = listeMitEintraegen
-SpaltenNamen.append('verzeichnis')
+SpaltenNamen.append('verzeichnis/film')
 SpaltenNamen.append('hash')
+SpaltenNamen.append('m')
 AnzahlSpaltenNamen = len(SpaltenNamen)
 print(str(AnzahlSpaltenNamen) + '/' + str(AnzahlKategorien))
 if AnzahlSpaltenNamen != AnzahlKategorien:
