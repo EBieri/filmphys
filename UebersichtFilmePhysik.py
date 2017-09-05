@@ -18,7 +18,7 @@ mf.saghallo()
 
 # Übersicht Variablen:
 pfadPythonscript = os.getcwd()
-pfadFilmverzeichnis = pfadPythonscript + "/" + NameFilmverzeichnis
+pfadFilmverzeichnis = pfadPythonscript + os.sep + NameFilmverzeichnis
 for root, dirs, files in os.walk(pfadFilmverzeichnis):
     PfadAlsListe = root.split(os.sep)
     LaengePfadAlsListe = len(PfadAlsListe)
@@ -179,10 +179,10 @@ for datei in ListeXMLDateiMitFilmDateien:
     #Film-Verzeichnis auslesen:
     #print("Filmverzeichnis:")
     #print(datei[len(pfadFilmverzeichnis):-4])
-    link = '<a href="' + datei[0][:-4] + '.' + datei[1] + '"> ' + datei[0][len(pfadFilmverzeichnis)+1:-4] + '.' + datei[1] + '</a> '
-    print(link)
+    link = '<a href="' + "file://" + datei[0][:-4] + '.' + datei[1] + '"> ' + datei[0][len(pfadFilmverzeichnis)+1:-4] + '.' + datei[1] + '</a> '
+    print("/".join(link.split('\\')))
     #DatenEinzelnerFilm.append(datei[0][len(pfadFilmverzeichnis)+1:-4] + '.' + datei[1])
-    DatenEinzelnerFilm.append(link)
+    DatenEinzelnerFilm.append("/".join(link.split('\\')))
 
     #Hashsumme (sha1sum) Datei bestimmen:
     with open(datei[0], "rb") as f:
@@ -196,7 +196,8 @@ for datei in ListeXMLDateiMitFilmDateien:
 
     #Hat es Material?
     if datei[2] == '1':
-        DatenEinzelnerFilm.append('<a href="' + datei[0][:-4] + '"> ' + datei[2] + '</a> ')
+        s = '<a href="' + "file://" + datei[0][:-4] + '"> ' + datei[2] + '</a> '
+        DatenEinzelnerFilm.append("/".join(s.split('\\')))
     else:
         DatenEinzelnerFilm.append(datei[2])
 
