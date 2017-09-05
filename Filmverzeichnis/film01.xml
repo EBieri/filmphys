@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <film>
-	<title></title>
+	<titel> Das ist der Titel </titel>
 	<beschreibung>Film über verschiedene Energieformen</beschreibung>
 	<stichworte>Energien, Elektroauto, erneuerbare, nichterneuerbare</stichworte>
 </film>
