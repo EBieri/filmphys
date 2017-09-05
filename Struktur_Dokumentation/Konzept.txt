@@ -11,10 +11,14 @@ Eingabe / Input:
 - zu jeder Filmdatei gibt es eine xml-Datei mit gleichem Namen, welche obige item (Ttel, Beschreibung, usw.) enthält
 
 Ablauf Skript:
-- Einlesen der xml-Datei
-- Speichern in Datenstruktur: -> Liste ODER Dictionary?
+- 4 Listen mit Dateinamen erstellen: ListeXMLDateiMitFilmDateien, ListeMitDateienOhneEndung, 
+	ListeXMLDateienOhneFilmDateien, ListeDateienOhneXML
+	-> Die 1. Liste ist die interessante, die anderen drei dienen dazu die Konsistenz der Ausgangsdaten zu bewerten.
+- XML-Dateien mit Hilfe der 1. Liste auslesen und diese Info in einer Datenstruktur speichern: Liste ODER Dictionary?
+	-> Vorerst Liste
 - Erstellen einer html-Seite aus der Datenstruktur
 - Export der Datenstruktur in eine csv-Datei
+- Auswerten und Darstellen der Listen 2. - 4.
 
 Klären: 
 - Struktur Filmverzeichnis

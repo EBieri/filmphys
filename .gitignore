@@ -1,2 +1,9 @@
 # Compiler-Dateien von Python
 __pycache__
+
+# Ausgabedateien:
+UebersichtFilme.html
+UebersichtFilme2.html
+UebersichtFilme.html~
+UebersichtFilme2.html~
+
