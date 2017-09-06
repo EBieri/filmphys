@@ -9,6 +9,7 @@ import os
 from xml.dom.minidom import parse
 import xml.dom.minidom
 import hashlib
+import csv
 
 # Schlussendlich sollen alle Funktionen als Module augelagert werden
 # Das vereinfacht die Wartung und erhöht die Übersicht.
@@ -18,7 +19,7 @@ mf.saghallo()
 
 # Übersicht Variablen:
 pfadPythonscript = os.getcwd()
-pfadFilmverzeichnis = pfadPythonscript + "/" + NameFilmverzeichnis
+pfadFilmverzeichnis = pfadPythonscript + os.sep + NameFilmverzeichnis
 for root, dirs, files in os.walk(pfadFilmverzeichnis):
     PfadAlsListe = root.split(os.sep)
     LaengePfadAlsListe = len(PfadAlsListe)
@@ -99,9 +100,11 @@ for root, dirs, files in os.walk(pfadFilmverzeichnis):
                                     verzeichnisVorhanden = 1
                                     #print(dir + '/' + file)
                             if verzeichnisVorhanden == 1:
-                                Eintrag.append("1")
+                                Eintrag.append("JA")
                             else:
-                                Eintrag.append("0")
+                                Eintrag.append("nein")
+                            #Zuletzt noch Name eintragen (ohne Pfad)
+                            Eintrag.append(DateiUndEndung[0] + "." + DateiUndEndung2[1])
 
                     #print(Eintrag)
                             ListeXMLDateiMitFilmDateien.append(Eintrag)
@@ -165,7 +168,8 @@ for datei in ListeXMLDateiMitFilmDateien:
             try:
                 s = film.getElementsByTagName(eintrag)[0].childNodes[0].data
             except:
-                s = datei[0].split('/')[-1:][0][:-4]
+                #s = datei[0].split('/')[-1:][0][:-4]
+                s = datei[3]
                 #print(s)
         else:
             try:
@@ -179,10 +183,10 @@ for datei in ListeXMLDateiMitFilmDateien:
     #Film-Verzeichnis auslesen:
     #print("Filmverzeichnis:")
     #print(datei[len(pfadFilmverzeichnis):-4])
-    link = '<a href="' + datei[0][:-4] + '.' + datei[1] + '"> ' + datei[0][len(pfadFilmverzeichnis)+1:-4] + '.' + datei[1] + '</a> '
-    print(link)
+    link = '<a href="' + "file://" + datei[0][:-4] + '.' + datei[1] + '"> ' + datei[0][len(pfadFilmverzeichnis)+1:-4] + '.' + datei[1] + '</a> '
+    print("/".join(link.split('\\')))
     #DatenEinzelnerFilm.append(datei[0][len(pfadFilmverzeichnis)+1:-4] + '.' + datei[1])
-    DatenEinzelnerFilm.append(link)
+    DatenEinzelnerFilm.append("/".join(link.split('\\')))
 
     #Hashsumme (sha1sum) Datei bestimmen:
     with open(datei[0], "rb") as f:
@@ -195,8 +199,9 @@ for datei in ListeXMLDateiMitFilmDateien:
     DatenEinzelnerFilm.append(bstr[:8])
 
     #Hat es Material?
-    if datei[2] == '1':
-        DatenEinzelnerFilm.append('<a href="' + datei[0][:-4] + '"> ' + datei[2] + '</a> ')
+    if datei[2] == 'JA':
+        s = '<a href="' + "file://" + datei[0][:-4] + '"> ' + datei[2] + '</a> '
+        DatenEinzelnerFilm.append("/".join(s.split('\\')))
     else:
         DatenEinzelnerFilm.append(datei[2])
 
@@ -206,11 +211,12 @@ for datei in ListeXMLDateiMitFilmDateien:
     print(DatenAlleFilme)
         
 # HTML-Datei Daten:
+HTMLString = ""
 NameHTMLDatei = "UebersichtFilme2.html"
 TitelHTMLDatei = '&Uuml;bersicht Filme'
 AnzahlKategorien = len(DatenAlleFilme[0])
 SpaltenNamen = listeMitEintraegen
-SpaltenNamen.append('verzeichnis/film')
+SpaltenNamen.append('verzeichnis (ausgehend von ' + NameFilmverzeichnis + ')')
 SpaltenNamen.append('hash')
 SpaltenNamen.append('m')
 AnzahlSpaltenNamen = len(SpaltenNamen)
@@ -221,14 +227,17 @@ if AnzahlSpaltenNamen != AnzahlKategorien:
 
 Ausgabedatei = open(NameHTMLDatei,"w")
 AnfangHTML = "<!DOCTYPE html>" + '\n' + '<html lang="de">' + '\n' + '<head>' + '\n' + '<meta charset="utf-8">' + '\n' + '<meta name="viewport" content="width=device-width, initial-scale=1.0">' + '\n' + '<title> ' + TitelHTMLDatei + ' </title>' + '\n' + '</head>' + '\n' + '<body>' + '\n'
-Ausgabedatei.write(AnfangHTML)
-Ausgabedatei.write('<h2> ' + TitelHTMLDatei + ' </h2>')
+#Ausgabedatei.write(AnfangHTML)
+HTMLString = HTMLString + AnfangHTML
+#Ausgabedatei.write('<h2> ' + TitelHTMLDatei + ' </h2>')
+HTMLString = HTMLString + '<h2> ' + TitelHTMLDatei + ' </h2>'
 AnfangTabelle = '<table border="1" width="100%">' + '\n' + '<colgroup>' + '\n'
 s = ""
 for i in range(0,AnzahlSpaltenNamen):
     s = s + '<col width="1*">'
 AnfangTabelle = AnfangTabelle + '\n' + '</colgroup>' + '\n' + '<tr bgcolor="#EEEEEE">' + '\n'
-Ausgabedatei.write(AnfangTabelle)
+#Ausgabedatei.write(AnfangTabelle)
+HTMLString = HTMLString + AnfangTabelle
 
 MitteTabelle = ""
 for i in range(0,AnzahlSpaltenNamen):
@@ -236,8 +245,8 @@ for i in range(0,AnzahlSpaltenNamen):
     #print(SpaltenNamen[i])
     MitteTabelle = MitteTabelle + '<td> <b> ' + SpaltenNamen[i] + '</b> </td>'
 MitteTabelle = MitteTabelle + '\n' + '</tr>' + '\n'
-Ausgabedatei.write(MitteTabelle)
-
+#Ausgabedatei.write(MitteTabelle)
+HTMLString = HTMLString + MitteTabelle
 
 print(len(DatenAlleFilme))
 #for i in range(0,2):
@@ -246,12 +255,71 @@ for i in range(len(DatenAlleFilme)):
     for j in range(0,AnzahlSpaltenNamen):
         NeueZeile = NeueZeile + '<td> ' + str(DatenAlleFilme[i][j]) + '</td>'
     NeueZeile = NeueZeile + '\n' + '</tr>' + '\n'
-    Ausgabedatei.write(NeueZeile)
+    #Ausgabedatei.write(NeueZeile)
+    HTMLString = HTMLString + NeueZeile
 
 EndeTabelle = '<!-- usw. andere Zeilen der Tabelle -->' + '\n' + '</table>' + '\n'
-Ausgabedatei.write(EndeTabelle)
+#Ausgabedatei.write(EndeTabelle)
+HTMLString = HTMLString + EndeTabelle
 
 EndeHTML = '</body>' + '\n' + '</html>'
-Ausgabedatei.write(EndeHTML)
+#Ausgabedatei.write(EndeHTML)
+HTMLString = HTMLString + EndeHTML
+#Umlaute in HTML-Version umschreiben
+HTMLString = HTMLString.replace("ü","&uuml;")
+HTMLString = HTMLString.replace("Ü","&Uuml;")
+HTMLString = HTMLString.replace("ö","&ouml;")
+HTMLString = HTMLString.replace("Ö","&Ouml;")
+HTMLString = HTMLString.replace("ä","&auml;")
+HTMLString = HTMLString.replace("Ä","&Auml;")
+Ausgabedatei.write(HTMLString)
 Ausgabedatei.close()
-    
+
+# DatenAlleFilme als csv-Datei speichern:
+if not os.path.exists('csv-Dateien'):
+    os.makedirs('csv-Dateien')
+    print("------------------------------------------------")
+    print('Verzeichnis csv-Dateien erstellt.')
+csv_Datei = open("csv-Dateien/UebersichtFilme.csv", "w")
+csv_writer = csv.writer(csv_Datei)
+print('---------------------------------')
+for row in DatenAlleFilme:
+    row2 = []
+    for i in row:
+        print(i.find('<a href="file://'))
+        print(i.find('>'))
+        if i.find('<a href="file://') != -1 and i.find('">') != -1:
+            a = i.find('<a href="file://') + len('<a href="file://')
+            b = i.find('">')
+            i = i[a:b]
+            print("*" + i)
+        row2.append(i)
+    print(row2)
+    csv_writer.writerow(row2)
+csv_Datei.close()
+
+#Ausgabe Fehler
+if not os.path.exists('Log-Dateien'):
+    os.makedirs('Log-Dateien')
+    print("------------------------------------------------")
+    print('Verzeichnis Log-Dateien erstellt.')
+Dout = open("Log-Dateien/ListeMitDateienOhneEndung.txt","w")
+s = ""
+for i in ListeMitDateienOhneEndung:
+    s = s + str(i) + '\n'
+Dout.write(s)
+Dout.close()
+
+Dout = open("Log-Dateien/ListeXMLDateienOhneFilmDateien.txt","w")
+s = ""
+for i in ListeXMLDateienOhneFilmDateien:
+    s = s + str(i) + '\n'
+Dout.write(s)
+Dout.close()
+
+Dout = open("Log-Dateien/ListeDateienOhneXML.txt","w")
+s = ""
+for i in ListeDateienOhneXML:
+    s = s + str(i) + '\n'
+Dout.write(s)
+Dout.close()
