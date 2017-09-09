@@ -154,7 +154,7 @@ if debug:
 # Liste ListeXMLDateiMitFilmDateien durchgehen und Daten aus XML-Dateien auslesen:
 listeMitEintraegen = ['titel', 'beschreibung', 'stichworte']
 for datei in ListeXMLDateiMitFilmDateien:
-    print("")
+    print("datei[0]")
     print(datei)
     print(datei[0])
     print(datei[0][:-4] + '.' + datei[1])
@@ -189,7 +189,7 @@ for datei in ListeXMLDateiMitFilmDateien:
     DatenEinzelnerFilm.append("/".join(link.split('\\')))
 
     #Hashsumme (sha1sum) Datei bestimmen:
-    with open(datei[0], "rb") as f:
+    with open(datei[0][:-4] + '.' + datei[1], "rb") as f:
         data = f.read()
         sha1summe = hashlib.sha1()
         sha1summe.update(data)
