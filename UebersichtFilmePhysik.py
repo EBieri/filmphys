@@ -156,6 +156,8 @@ listeMitEintraegen = ['titel', 'beschreibung', 'stichworte']
 for datei in ListeXMLDateiMitFilmDateien:
     print("datei[0]")
     print(datei)
+    print("HIER")
+    print(type(datei[0]))
     print(datei[0])
     print(datei[0][:-4] + '.' + datei[1])
     DOMTree = xml.dom.minidom.parse(datei[0])
