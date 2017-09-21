@@ -20,7 +20,13 @@ sPfadPythonscript = os.getcwd()
 sPfadFilmverzeichnis = sPfadPythonscript + os.sep + sNameFilmverzeichnis
 sNameSQLliteDB = "filmeDB.db"
 listeFilme = []
+sNameMaterialOrdner = "Material"
 # iID = 0
+
+# Eine evtl. vorhandene DB-Datei löschen
+if os.path.isfile(sNameSQLliteDB):
+    print(sNameSQLliteDB + " vorhanden, wird nun gelöscht.")
+    os.remove(sNameSQLliteDB)
 
 # Verbindung zu Datenbank erzeugen
 connection = sqlite3.connect(sNameSQLliteDB)
@@ -41,7 +47,9 @@ sql = "CREATE TABLE IF NOT EXISTS filme(" \
         "thema TEXT, "\
         "bemerkungen TEXT, "\
         "pfad TEXT, "\
-        "hash TEXT PRIMARY KEY)"
+        "hash TEXT PRIMARY KEY, "\
+        "materialvorhanden INTEGER)"
+
 print(sql)
 cursor.execute(sql)      
 
@@ -96,6 +104,13 @@ for root, dirs, files in os.walk(sPfadFilmverzeichnis):
                         #print(bstr[:8])
                         ListeEintraegeFilm.append(bstr[:8])
 
+            #Testen, ob im Ordner der xml-Datei der Ordner 'Material' vorhanden ist
+            iMaterialVorhanden = "0"
+            if os.path.isdir(root + os.sep + sNameMaterialOrdner):
+                print("Material vorhanden: " + root + os.sep + sNameMaterialOrdner)
+                iMaterialVorhanden = "1"
+            ListeEintraegeFilm.append(iMaterialVorhanden)
+
             listeFilme.append(ListeEintraegeFilm)
             #print(ListeEintraegeFilm)
 
@@ -118,3 +133,8 @@ for film in listeFilme:
 
 #Verbindung beenden
 connection.close()
+
+# Nun DB auslesen und in HTML-Seite speichern.
+# Dieser Teil wird später ausgelagert.
+
+# DB kontaktieren
