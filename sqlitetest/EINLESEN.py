@@ -159,22 +159,25 @@ if os.path.isfile(sNameSQLliteDB):
         #print(dsatz[0], dsatz[1], dsatz[2], sep = ';')
         AusgabeEinzelnerFilm = []
         for d in dsatz:
-            AusgabeEinzelnerFilm.append(d)
+            AusgabeEinzelnerFilm.append(str(d))
         DatenAlleFilme.append(AusgabeEinzelnerFilm)
     print(DatenAlleFilme) 
     # Verbindung beenden
     connection.close()
 
-# Pfad kürzen, sodass ab Filmverzeichnis:
+# Pfad kürzen, sodass ab Filmverzeichnis plus html link einfügen
 for i in DatenAlleFilme:
     #print(i[7])
     #print(sPfadFilmverzeichnis)
-    print(i[7][len(sPfadFilmverzeichnis)+1:])
-    i[7] = i[7][len(sPfadFilmverzeichnis)+1:]
+    print(i[7][len(sPfadPythonscript)+1:])
+    relLinkFilm = i[7][len(sPfadPythonscript)+1:]
+    i[7] = "<a href='" + relLinkFilm + "'>" + relLinkFilm[len(sNameFilmverzeichnis)+1:] + "</a>" 
+    if i[9] == '1':
+        i[9] = "<a href='" + relLinkFilm[:relLinkFilm.rfind(os.sep)] + os.sep + "Material" + "'> JA </a>"
     
 # HTML-Seite erstellen:
 HTMLString = ""
-NameHTMLDatei = "UebersichtFilme2.html"
+NameHTMLDatei = "UebersichtFilme.html"
 TitelHTMLDatei = '&Uuml;bersicht Filme'
 AnzahlKategorien = len(DatenAlleFilme[0])
 SpaltenNamen = listeMitEintraegen
