@@ -21,6 +21,7 @@ sPfadFilmverzeichnis = sPfadPythonscript + os.sep + sNameFilmverzeichnis
 sNameSQLliteDB = "filmeDB.db"
 listeFilme = []
 sNameMaterialOrdner = "Material"
+sNameTabelle = "filme"
 # iID = 0
 
 # Eine evtl. vorhandene DB-Datei löschen
@@ -38,7 +39,7 @@ connection = sqlite3.connect(sNameSQLliteDB)
 # Datensatucursor erzeugen
 cursor = connection.cursor()
 # Tabelle erzeugen
-sql = "CREATE TABLE IF NOT EXISTS filme(" \
+sql = "CREATE TABLE IF NOT EXISTS " + sNameTabelle + "(" \
         "titel TEXT, " \
         "stichworte TEXT, " \
         "beschreibung TEXT, " \
@@ -137,4 +138,101 @@ connection.close()
 # Nun DB auslesen und in HTML-Seite speichern.
 # Dieser Teil wird später ausgelagert.
 
-# DB kontaktieren
+# Abbruch, falls keine DB vorhanden:
+#if os.path.isfile("test"):
+if os.path.isfile(sNameSQLliteDB):
+    print("Es gibt eine DB mit Namen " + sNameSQLliteDB + "!")
+    # DB kontaktieren, Cursor
+    connection = sqlite3.connect(sNameSQLliteDB)
+    cursor = connection.cursor()
+
+    # SQL Abfrage (alles auslesen)
+    sql = "SELECT * FROM " + sNameTabelle
+    print(sql)
+
+    # Absenden SQL-Abfrage, Empfang Ergebnis
+    cursor.execute(sql)
+
+    # Ausgabe Ergebnis, speichern in Liste
+    DatenAlleFilme = []
+    for dsatz in cursor:
+        #print(dsatz[0], dsatz[1], dsatz[2], sep = ';')
+        AusgabeEinzelnerFilm = []
+        for d in dsatz:
+            AusgabeEinzelnerFilm.append(d)
+        DatenAlleFilme.append(AusgabeEinzelnerFilm)
+    print(DatenAlleFilme) 
+    # Verbindung beenden
+    connection.close()
+
+# Pfad kürzen, sodass ab Filmverzeichnis:
+for i in DatenAlleFilme:
+    #print(i[7])
+    #print(sPfadFilmverzeichnis)
+    print(i[7][len(sPfadFilmverzeichnis)+1:])
+    i[7] = i[7][len(sPfadFilmverzeichnis)+1:]
+    
+# HTML-Seite erstellen:
+HTMLString = ""
+NameHTMLDatei = "UebersichtFilme2.html"
+TitelHTMLDatei = '&Uuml;bersicht Filme'
+AnzahlKategorien = len(DatenAlleFilme[0])
+SpaltenNamen = listeMitEintraegen
+SpaltenNamen.append('pfad (ausgehend von ' + sNameFilmverzeichnis + ')')
+SpaltenNamen.append('hash')
+SpaltenNamen.append('materialvorhanden')
+AnzahlSpaltenNamen = len(SpaltenNamen)
+print(str(AnzahlSpaltenNamen) + '/' + str(AnzahlKategorien))
+if AnzahlSpaltenNamen != AnzahlKategorien:
+    print("Die Anzahl Spalten und Anzahl Kategorien stimmt nicht überein, ABRUCH!")
+    exit
+
+Ausgabedatei = open(NameHTMLDatei,"w")
+AnfangHTML = "<!DOCTYPE html>" + '\n' + '<html lang="de">' + '\n' + '<head>' + '\n' + '<meta charset="utf-8">' + '\n' + '<meta name="viewport" content="width=device-width, initial-scale=1.0">' + '\n' + '<title> ' + TitelHTMLDatei + ' </title>' + '\n' + '</head>' + '\n' + '<body>' + '\n'
+#Ausgabedatei.write(AnfangHTML)
+HTMLString = HTMLString + AnfangHTML
+#Ausgabedatei.write('<h2> ' + TitelHTMLDatei + ' </h2>')
+HTMLString = HTMLString + '<h2> ' + TitelHTMLDatei + ' </h2>'
+AnfangTabelle = '<table border="1" width="100%">' + '\n' + '<colgroup>' + '\n'
+s = ""
+for i in range(0,AnzahlSpaltenNamen):
+    s = s + '<col width="1*">'
+AnfangTabelle = AnfangTabelle + '\n' + '</colgroup>' + '\n' + '<tr bgcolor="#EEEEEE">' + '\n'
+#Ausgabedatei.write(AnfangTabelle)
+HTMLString = HTMLString + AnfangTabelle
+
+MitteTabelle = ""
+for i in range(0,AnzahlSpaltenNamen):
+    #print(i)
+    #print(SpaltenNamen[i])
+    MitteTabelle = MitteTabelle + '<td> <b> ' + SpaltenNamen[i] + '</b> </td>'
+MitteTabelle = MitteTabelle + '\n' + '</tr>' + '\n'
+#Ausgabedatei.write(MitteTabelle)
+HTMLString = HTMLString + MitteTabelle
+
+print(len(DatenAlleFilme))
+#for i in range(0,2):
+for i in range(len(DatenAlleFilme)):
+    NeueZeile = "<tr>"
+    for j in range(0,AnzahlSpaltenNamen):
+        NeueZeile = NeueZeile + '<td> ' + str(DatenAlleFilme[i][j]) + '</td>'
+    NeueZeile = NeueZeile + '\n' + '</tr>' + '\n'
+    #Ausgabedatei.write(NeueZeile)
+    HTMLString = HTMLString + NeueZeile
+
+EndeTabelle = '<!-- usw. andere Zeilen der Tabelle -->' + '\n' + '</table>' + '\n'
+#Ausgabedatei.write(EndeTabelle)
+HTMLString = HTMLString + EndeTabelle
+
+EndeHTML = '</body>' + '\n' + '</html>'
+#Ausgabedatei.write(EndeHTML)
+HTMLString = HTMLString + EndeHTML
+#Umlaute in HTML-Version umschreiben
+HTMLString = HTMLString.replace("ü","&uuml;")
+HTMLString = HTMLString.replace("Ü","&Uuml;")
+HTMLString = HTMLString.replace("ö","&ouml;")
+HTMLString = HTMLString.replace("Ö","&Ouml;")
+HTMLString = HTMLString.replace("ä","&auml;")
+HTMLString = HTMLString.replace("Ä","&Auml;")
+Ausgabedatei.write(HTMLString)
+Ausgabedatei.close()
