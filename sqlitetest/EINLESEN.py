@@ -147,7 +147,7 @@ if os.path.isfile(sNameSQLliteDB):
     cursor = connection.cursor()
 
     # SQL Abfrage (alles auslesen)
-    sql = "SELECT * FROM " + sNameTabelle
+    sql = "SELECT * FROM " + sNameTabelle + " ORDER BY pfad ASC"
     print(sql)
 
     # Absenden SQL-Abfrage, Empfang Ergebnis
